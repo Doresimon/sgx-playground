@@ -30,18 +30,73 @@
  */
 
 
-/* Play.edl - . */
+#include "../App.h"
+#include "Enclave_u.h"
 
-enclave {
 
-    trusted {
-        /*
-         * Nothing.
-         */
-        public void ecall_cal_avg([in]int arr[4], [out]int *out);
+void untrusted_cal_avg_darr(int len, int *arr, int *out);
 
-        // count => buffer 长度       => unsigned
-        // size  => buffer 大小(byte) => size_t
-        public void ecall_cal_avg_darr(unsigned len, [in, count=len]int *arr, [out]int *out);
-    };
-};
+/* ecall_libc_functions:
+ *   Invokes standard C functions.
+ */
+void ecall_play_functions(void)
+{
+    sgx_status_t ret = SGX_ERROR_UNEXPECTED;
+
+    // 1
+
+    printf("\n\n########## START ############\n\n");
+    printf("明文输入数组, 明文返回结果\n");
+    printf("- 定长数组\n");
+    printf("arr[4] = {6, 6, 6, 6}\n");
+
+    int arr[4] = {6, 6, 6, 6};
+    int avg = 0;
+    ret = ecall_cal_avg(global_eid, arr, &avg);
+    if (ret != SGX_SUCCESS)
+        abort();
+
+
+    printf("avg = %d \n", avg);
+    printf("\n\n########## DONE #############\n\n");
+
+
+    // 2
+
+    printf("\n\n########## START ############\n\n");
+    printf("明文输入数组, 明文返回结果\n");
+    printf("- 不定长数组\n");
+    printf("- 必须在.edl文件中声明出输入的数组的长度, 否则无法拷贝进入enclave\n");
+    printf("{5, 5, 5, 5, 5, 5}\n");
+
+    int len = 6;
+    int *darr = (int *)malloc(sizeof(int) * len);
+    
+    for(int i = 0; i < len; i++){
+        darr[i] = 5;
+    }
+
+    // untrusted_cal_avg_darr(len, darr, &avg); // ok 
+    ret = ecall_cal_avg_darr(global_eid, 6, darr, &avg);
+    if (ret != SGX_SUCCESS)
+        abort();
+
+
+    printf("avg = %d \n", avg);
+    printf("\n\n########## DONE #############\n\n");
+}
+
+
+/* untrusted_cal_avg_darr
+ *   Calculate average of an int array, 
+ */
+void untrusted_cal_avg_darr(int len, int *arr, int *out)
+{
+    int avg = 0;
+    for (int i = 0; i < len; i++)
+    {
+        avg += arr[i];
+    }
+    avg = avg / len;
+    *out = avg;
+}

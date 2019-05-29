@@ -38,16 +38,28 @@
 /* ecall_cal_avg
  *   Calculate average of an int array
  */
-void ecall_cal_avg(int len, int arr[4], int *out)
+void ecall_cal_avg(int arr[4], int *out)
 {
     int avg = 0;
+    for (int i = 0; i < 4; i++)
+    {
+        avg += arr[i];
+    }
+    avg = avg / 4;
+    *out = avg;
+}
 
+/* ecall_cal_avg_darr
+ *   Calculate average of an int array, 
+ */
+void ecall_cal_avg_darr(unsigned len, int *arr, int *out)
+{
+    int llen = (int)len;
+    int avg = 0;
     for (int i = 0; i < len; i++)
     {
         avg += arr[i];
     }
-
     avg = avg / len;
-
     *out = avg;
 }

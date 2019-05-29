@@ -49,17 +49,4 @@ void ecall_libc_functions(void)
     if (ret != SGX_SUCCESS)
         abort();
 
-    printf("\n\n########## START ############\n\n");
-
-    int arr[4] = {6, 6, 6, 6};
-    int len = 4;
-    int avg = 0;
-    ret = ecall_cal_avg(global_eid, len, arr, &avg);
-    if (ret != SGX_SUCCESS)
-        abort();
-
-
-    printf("avg = %d \n", avg);
-    
-    printf("\n\n########## DONE #############\n\n");
 }

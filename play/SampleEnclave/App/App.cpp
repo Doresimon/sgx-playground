@@ -178,6 +178,8 @@ int initialize_enclave(void)
         strncpy(token_path, TOKEN_FILENAME, sizeof(TOKEN_FILENAME));
     }
 
+    printf("\n\n token_path = %s \n\n", token_path);
+
     FILE *fp = fopen(token_path, "rb");
     if (fp == NULL && (fp = fopen(token_path, "wb")) == NULL) {
         printf("Warning: Failed to create/open the launch token file \"%s\".\n", token_path);
@@ -252,6 +254,8 @@ int SGX_CDECL main(int argc, char *argv[])
     ecall_libc_functions();
     ecall_libcxx_functions();
     ecall_thread_functions();
+
+    ecall_play_functions();   // function defined in "Enclave_u.h"
 
     /* Destroy the enclave */
     sgx_destroy_enclave(global_eid);
