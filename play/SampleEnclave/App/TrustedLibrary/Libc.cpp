@@ -48,4 +48,12 @@ void ecall_libc_functions(void)
     ret = ecall_sgx_cpuid(global_eid, cpuid, 0x0);
     if (ret != SGX_SUCCESS)
         abort();
+
+    printf("\n\n########## START ############\n\n");
+    int arr[4] = {6, 6, 6, 6};
+    ret = ecall_cal_avg(4, arr);
+    if (ret != SGX_SUCCESS)
+        abort();
+    
+    printf("\n\n########## DONE #############\n\n");
 }

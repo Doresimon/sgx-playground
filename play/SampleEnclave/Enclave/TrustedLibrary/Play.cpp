@@ -29,35 +29,45 @@
  *
  */
 
-/* Enclave.edl - Top EDL file. */
+#include <string.h>
+#include "sgx_cpuid.h"
 
-enclave {
-    
-    include "user_types.h" /* buffer_t */
+#include "sgx_trts.h"
+#include "../Enclave.h"
+#include "Enclave_t.h"
 
-    /* Import ECALL/OCALL from sub-directory EDLs.
-     *  [from]: specifies the location of EDL file. 
-     *  [import]: specifies the functions to import, 
-     *  [*]: implies to import all functions.
-     */
-    
-    from "Edger8rSyntax/Types.edl" import *;
-    from "Edger8rSyntax/Pointers.edl" import *;
-    from "Edger8rSyntax/Arrays.edl" import *;
-    from "Edger8rSyntax/Functions.edl" import *;
+/* ecall_malloc_free:
+ *   Uses malloc/free to allocate/free trusted memory.
+ */
+void ecall_malloc_free(void)
+{
+    void *ptr = malloc(100);
+    assert(ptr != NULL);
+    memset(ptr, 0x0, 100);
+    free(ptr);
+}
 
-    from "TrustedLibrary/Libc.edl" import *;
-    from "TrustedLibrary/Libcxx.edl" import ecall_exception, ecall_map;
-    from "TrustedLibrary/Thread.edl" import *;
-    from "TrustedLibrary/Play.edl" import *;
+/* ecall_sgx_cpuid:
+ *   Uses sgx_cpuid to get CPU features and types.
+ */
+void ecall_sgx_cpuid(int cpuinfo[4], int leaf)
+{
+    sgx_status_t ret = sgx_cpuid(cpuinfo, leaf);
+    if (ret != SGX_SUCCESS)
+        abort();
+}
 
-    /* 
-     * ocall_print_string - invokes OCALL to display string buffer inside the enclave.
-     *  [in]: copy the string buffer to App outside.
-     *  [string]: specifies 'str' is a NULL terminated buffer.
-     */
-    untrusted {
-        void ocall_print_string([in, string] const char *str);
-    };
+/* ecall_cal_avg
+ *   Calculate average of an int array
+ */
+void ecall_cal_avg(int len, int *arr)
+{
+    int avg = 0;
 
-};
+    for (int i = 0; i < len; i++)
+    {
+        avg += arr;
+    }
+
+    avg = avg / len;
+}
