@@ -1,6 +1,9 @@
 # docker build . -f ./ubuntu-bionic.dockerfile -t u18
-# docker run -it -v /Users/guanjixing/Desktop/git/github/Doresimon:/home/halo u18 
-# docker run -dit -v /Users/guanjixing/Desktop/git/github/Doresimon:/home/halo u18 
+# docker run -it -v /Users/guanjixing/Desktop/git/github/Doresimon/sgx-playground:/home/dev u18
+# docker run -it -v ../:/home/dev u18
+
+# OR
+# docker run -dit -v /Users/guanjixing/Desktop/git/github/Doresimon:/home/dev u18 
 # docker exec -it test /bin/bash
 
 
@@ -12,9 +15,9 @@ RUN apt-get update && apt-get install -y locales && rm -rf /var/lib/apt/lists/* 
     && localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8
 ENV LANG en_US.utf8
 
-RUN mkdir /home/halo
+RUN mkdir /home/dev
 
-WORKDIR /home/halo
+WORKDIR /home/dev
 
 RUN source /opt/intel/sgxsdk/environment
 
